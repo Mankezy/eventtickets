@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Tashkilotchi paneli — ChiptaUZ{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+  <h1 class="h3 fw-bold mb-0"><i class="bi bi-kanban text-primary me-2"></i>Tashkilotchi paneli</h1>
+  <a href="{% url 'event_create' %}" class="btn btn-primary fw-semibold"><i class="bi bi-plus-lg me-1"></i>Yangi tadbir</a>
+</div>
+
+{% if stats %}
+  <div class="row g-3">
+    {% for row in stats %}
+      <div class="col-md-6 col-xl-4">
+        <div class="card event-card h-100 shadow-sm">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-primary-subtle text-primary">{{ row.event.get_category_display }}</span>
+              <span class="badge {% if row.event.status == 'active' %}bg-success{% elif row.event.status == 'cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">
+                {{ row.event.get_status_display }}
+              </span>
+            </div>
+            <h2 class="h6 fw-bold">{{ row.event.title }}</h2>
+            <p class="small text-muted mb-2"><i class="bi bi-calendar3 me-1"></i>{{ row.event.date|date:"d.m.Y" }}, {{ row.event.time|time:"H:i" }}</p>
+            <div class="progress mb-2" style="height: 8px;">
+              {% widthratio row.sold row.capacity 100 as pct %}
+              <div class="progress-bar bg-primary" style="width: {{ pct }}%"></div>
+            </div>
+            <div class="d-flex justify-content-between small text-muted mb-3">
+              <span>Sotildi: <strong>{{ row.sold }} / {{ row.capacity }}</strong></span>
+              <span>Tushum: <strong class="text-primary">{{ row.revenue|floatformat:0|intcomma }} so'm</strong></span>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <a href="{% url 'event_sales' row.event.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-graph-up me-1"></i>Sotuv</a>
+              <a href="{% url 'event_update' row.event.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Tahrirlash</a>
+              <a href="{{ row.event.get_absolute_url }}" class="btn btn-sm btn-outline-dark" target="_blank"><i class="bi bi-eye"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state card p-5 text-center">
+    <i class="bi bi-calendar-plus fs-1 text-muted"></i>
+    <p class="mt-3 mb-1 fw-semibold">Sizda hali tadbirlar yo'q</p>
+    <p class="text-muted mb-3">Birinchi tadbiringizni yarating va chipta sotishni boshlang.</p>
+    <a href="{% url 'event_create' %}" class="btn btn-primary">Yangi tadbir yaratish</a>
+  </div>
+{% endif %}
+{% endblock %}

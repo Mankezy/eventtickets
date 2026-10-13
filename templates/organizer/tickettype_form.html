@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Chipta turi — {{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <h1 class="h4 fw-bold mb-2">{% if editing %}Chipta turini tahrirlash{% else %}Yangi chipta turi{% endif %}</h1>
+    <p class="text-muted mb-4">Tadbir: <strong>{{ event.title }}</strong></p>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+            </div>
+          {% endfor %}
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary fw-semibold px-4">Saqlash</button>
+            <a href="{% url 'event_sales' event.pk %}" class="btn btn-outline-secondary">Bekor qilish</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

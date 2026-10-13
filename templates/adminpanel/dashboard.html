@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Admin panel — ChiptaUZ{% endblock %}
+
+{% block content %}
+<h1 class="h3 fw-bold mb-4"><i class="bi bi-shield-lock text-primary me-2"></i>Administrator paneli</h1>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg"><div class="card stat-card"><div class="card-body text-center">
+    <div class="fs-4 fw-bold text-primary">{{ stats.events }}</div><div class="small text-muted">Tadbirlar</div>
+  </div></div></div>
+  <div class="col-6 col-lg"><div class="card stat-card"><div class="card-body text-center">
+    <div class="fs-4 fw-bold text-primary">{{ stats.users }}</div><div class="small text-muted">Foydalanuvchilar</div>
+  </div></div></div>
+  <div class="col-6 col-lg"><div class="card stat-card"><div class="card-body text-center">
+    <div class="fs-4 fw-bold text-primary">{{ stats.orders }}</div><div class="small text-muted">Buyurtmalar</div>
+  </div></div></div>
+  <div class="col-6 col-lg"><div class="card stat-card"><div class="card-body text-center">
+    <div class="fs-4 fw-bold text-primary">{{ stats.tickets }}</div><div class="small text-muted">Chiptalar</div>
+  </div></div></div>
+  <div class="col-12 col-lg"><div class="card stat-card"><div class="card-body text-center">
+    <div class="fs-4 fw-bold text-success">{{ stats.revenue|floatformat:0|intcomma }}</div><div class="small text-muted">Umumiy tushum (so'm)</div>
+  </div></div></div>
+</div>
+
+<ul class="nav nav-pills mb-3" role="tablist">
+  <li class="nav-item"><button class="nav-link {% if tab == 'events' %}active{% endif %}" data-bs-toggle="pill" data-bs-target="#tab-events" type="button">Tadbirlar</button></li>
+  <li class="nav-item"><button class="nav-link {% if tab == 'users' %}active{% endif %}" data-bs-toggle="pill" data-bs-target="#tab-users" type="button">Foydalanuvchilar</button></li>
+  <li class="nav-item"><button class="nav-link {% if tab == 'orders' %}active{% endif %}" data-bs-toggle="pill" data-bs-target="#tab-orders" type="button">Buyurtmalar</button></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane fade {% if tab == 'events' %}show active{% endif %}" id="tab-events">
+    <div class="card shadow-sm"><div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light"><tr><th>Nomi</th><th>Tashkilotchi</th><th>Sana</th><th>Holat</th><th>Holatk o'zgartirish</th></tr></thead>
+        <tbody>
+        {% for e in events %}
+          <tr>
+            <td class="fw-semibold"><a href="{{ e.get_absolute_url }}" target="_blank">{{ e.title }}</a></td>
+            <td>{{ e.organizer.username }}</td>
+            <td class="small">{{ e.date|date:"d.m.Y" }}</td>
+            <td><span class="badge {% if e.status == 'active' %}bg-success{% elif e.status == 'cancelled' %}bg-danger{% else %}bg-secondary{% endif %}">{{ e.get_status_display }}</span></td>
+            <td>
+              <form method="post" action="{% url 'admin_event_status' e.pk %}" class="d-flex gap-1">
+                {% csrf_token %}
+                <select name="status" class="form-select form-select-sm" style="width:auto;">
+                  <option value="active">Faol</option>
+                  <option value="cancelled">Bekor qilish</option>
+                  <option value="finished">Yakunlangan</option>
+                </select>
+                <button class="btn btn-sm btn-outline-primary">OK</button>
+              </form>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5" class="text-center text-muted py-4">Tadbirlar yo'q.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="tab-pane fade {% if tab == 'users' %}show active{% endif %}" id="tab-users">
+    <div class="card shadow-sm"><div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light"><tr><th>Username</th><th>Ism</th><th>Rol</th><th>Sana</th><th>Rolni o'zgartirish</th></tr></thead>
+        <tbody>
+        {% for u in users %}
+          <tr>
+            <td class="fw-semibold">{{ u.username }} {% if u.is_superuser %}<span class="badge bg-dark">super</span>{% endif %}</td>
+            <td>{{ u.get_full_name|default:"—" }}</td>
+            <td><span class="badge bg-primary-subtle text-primary">{{ u.get_role_display }}</span></td>
+            <td class="small text-muted">{{ u.date_joined|date:"d.m.Y" }}</td>
+            <td>
+              <form method="post" action="{% url 'admin_user_role' u.pk %}" class="d-flex gap-1">
+                {% csrf_token %}
+                <select name="role" class="form-select form-select-sm" style="width:auto;">
+                  <option value="client">Mijoz</option>
+                  <option value="organizer">Tashkilotchi</option>
+                  <option value="controller">Nazoratchi</option>
+                  <option value="admin">Administrator</option>
+                </select>
+                <button class="btn btn-sm btn-outline-primary">OK</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="tab-pane fade {% if tab == 'orders' %}show active{% endif %}" id="tab-orders">
+    <div class="card shadow-sm"><div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light"><tr><th>#</th><th>Mijoz</th><th>Tadbir</th><th>Holat</th><th class="text-end">Summa</th><th>Sana</th></tr></thead>
+        <tbody>
+        {% for o in orders %}
+          <tr>
+            <td>{{ o.pk }}</td>
+            <td>{{ o.user.username }}</td>
+            <td>{{ o.event.title|truncatechars:30 }}</td>
+            <td><span class="badge {% if o.status == 'paid' %}bg-success{% elif o.status == 'pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">{{ o.get_status_display }}</span></td>
+            <td class="text-end">{{ o.total_amount|floatformat:0|intcomma }} so'm</td>
+            <td class="small text-muted">{{ o.created_at|date:"d.m.Y H:i" }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6" class="text-center text-muted py-4">Buyurtmalar yo'q.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

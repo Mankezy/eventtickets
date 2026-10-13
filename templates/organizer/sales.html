@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Sotuv — {{ event.title }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb small">
+    <li class="breadcrumb-item"><a href="{% url 'organizer_dashboard' %}">Panel</a></li>
+    <li class="breadcrumb-item active">{{ event.title }}</li>
+  </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-2">
+  <div>
+    <h1 class="h4 fw-bold mb-1">{{ event.title }}</h1>
+    <p class="text-muted small mb-0">{{ event.date|date:"d.m.Y" }}, {{ event.time|time:"H:i" }} · {{ event.address }}</p>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'tickettype_create' event.pk %}" class="btn btn-primary btn-sm fw-semibold"><i class="bi bi-plus-lg me-1"></i>Chipta turi qo'shish</a>
+    <a href="{% url 'event_update' event.pk %}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil me-1"></i>Tahrirlash</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card"><div class="card-body text-center">
+      <div class="fs-4 fw-bold text-primary">{{ paid_count }}</div><div class="small text-muted">To'langan buyurtma</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card"><div class="card-body text-center">
+      <div class="fs-4 fw-bold text-primary">{{ tickets_total }}</div><div class="small text-muted">Jami chipta</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card"><div class="card-body text-center">
+      <div class="fs-4 fw-bold text-success">{{ tickets_used }}</div><div class="small text-muted">Kirishlar soni</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="card stat-card"><div class="card-body text-center">
+      <div class="fs-4 fw-bold text-primary">{{ revenue|floatformat:0|intcomma }}</div><div class="small text-muted">Tushum (so'm)</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-header bg-white fw-bold">Chipta turlari</div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light"><tr><th>Nomi</th><th class="text-end">Narx</th><th class="text-center">Sig'im</th><th class="text-center">Sotildi</th><th class="text-center">Qoldi</th><th class="text-end">Tushum</th><th></th></tr></thead>
+      <tbody>
+      {% for tt in event.ticket_types.all %}
+        <tr>
+          <td class="fw-semibold">{{ tt.name }}</td>
+          <td class="text-end">{{ tt.price|floatformat:0|intcomma }} so'm</td>
+          <td class="text-center">{{ tt.capacity }}</td>
+          <td class="text-center"><span class="badge bg-primary-subtle text-primary">{{ tt.sold }}</span></td>
+          <td class="text-center">{% if tt.remaining == 0 %}<span class="badge bg-danger">0</span>{% else %}{{ tt.remaining }}{% endif %}</td>
+          <td class="text-end fw-semibold">{% widthratio tt.price 1 tt.sold as tt_revenue %}{{ tt_revenue|intcomma }} so'm</td>
+          <td class="text-end"><a href="{% url 'tickettype_update' tt.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">Chipta turlari qo'shilmagan.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-white fw-bold">So'nggi buyurtmalar</div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light"><tr><th>#</th><th>Mijoz</th><th>Holat</th><th class="text-end">Summa</th><th>Sana</th></tr></thead>
+      <tbody>
+      {% for order in orders %}
+        <tr>
+          <td>{{ order.pk }}</td>
+          <td>{{ order.user.username }}</td>
+          <td>
+            <span class="badge {% if order.status == 'paid' %}bg-success{% elif order.status == 'pending' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+              {{ order.get_status_display }}
+            </span>
+          </td>
+          <td class="text-end">{{ order.total_amount|floatformat:0|intcomma }} so'm</td>
+          <td class="small text-muted">{{ order.created_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="text-center text-muted py-4">Hozircha buyurtmalar yo'q.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

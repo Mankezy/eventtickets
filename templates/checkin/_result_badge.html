@@ -1,0 +1,8 @@
+{% if result == 'ok' %}<span class="badge bg-success">Ruxsat berildi</span>
+{% elif result == 'already_used' %}<span class="badge bg-warning text-dark">Oldin ishlatilgan</span>
+{% elif result == 'not_found' %}<span class="badge bg-danger">Topilmadi</span>
+{% elif result == 'bad_signature' %}<span class="badge bg-danger">Imzo noto'g'ri</span>
+{% elif result == 'cancelled' %}<span class="badge bg-danger">Bekor qilingan</span>
+{% elif result == 'wrong_event' %}<span class="badge bg-danger">Boshqa tadbir</span>
+{% elif result == 'wrong_order' %}<span class="badge bg-danger">To'lanmagan</span>
+{% else %}<span class="badge bg-secondary">{{ result }}</span>{% endif %}

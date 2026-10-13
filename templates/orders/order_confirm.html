@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Buyurtmani tasdiqlash — ChiptaUZ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <h1 class="h4 fw-bold mb-4">Buyurtmani tasdiqlang <span class="text-muted small">#{{ order.pk }}</span></h1>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex gap-3 align-items-center mb-4 pb-3 border-bottom">
+          {% if order.event.image %}
+            <img src="{{ order.event.image.url }}" alt="" class="rounded" style="width:80px;height:60px;object-fit:cover;">
+          {% endif %}
+          <div>
+            <h2 class="h6 fw-bold mb-1"><a href="{{ order.event.get_absolute_url }}" class="text-decoration-none">{{ order.event.title }}</a></h2>
+            <div class="small text-muted">
+              <i class="bi bi-calendar3 me-1"></i>{{ order.event.date|date:"d.m.Y" }}, {{ order.event.time|time:"H:i" }}
+              <span class="mx-1">·</span>
+              <i class="bi bi-geo-alt me-1"></i>{{ order.event.address }}
+            </div>
+          </div>
+        </div>
+
+        <table class="table align-middle">
+          <thead><tr class="small text-muted"><th>Chipta turi</th><th class="text-center">Miqdor</th><th class="text-end">Narx</th><th class="text-end">Summa</th></tr></thead>
+          <tbody>
+          {% for item in items %}
+            <tr>
+              <td class="fw-semibold">{{ item.ticket_type.name }}</td>
+              <td class="text-center">{{ item.quantity }}</td>
+              <td class="text-end">{{ item.unit_price|floatformat:0|intcomma }} so'm</td>
+              <td class="text-end fw-semibold">{{ item.subtotal|floatformat:0|intcomma }} so'm</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr class="border-top">
+              <td colspan="3" class="text-end fw-bold">Jami to'lov:</td>
+              <td class="text-end fw-bold text-primary fs-5">{{ order.total_amount|floatformat:0|intcomma }} so'm</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+          <a href="{% url 'payment' order.pk %}" class="btn btn-primary btn-lg flex-grow-1 fw-semibold">
+            <i class="bi bi-credit-card me-2"></i>To'lovga o'tish (DEMO)
+          </a>
+          <form method="post" action="{% url 'order_cancel' order.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-outline-danger btn-lg">Bekor qilish</button>
+          </form>
+        </div>
+        <p class="text-muted small mt-3 mb-0"><i class="bi bi-info-circle me-1"></i>Buyurtma 30 daqiqa kutilmoqda holatida qoladi. To'lov sinov rejimida amalga oshiriladi.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

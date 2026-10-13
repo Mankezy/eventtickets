@@ -1,0 +1,8 @@
+Django>=5.2,<6.2
+qrcode[pil]>=8.0
+reportlab>=4.0
+python-dotenv>=1.0
+gunicorn>=23.0
+whitenoise>=6.8
+dj-database-url>=2.2
+psycopg[binary]>=3.2

@@ -1,0 +1,105 @@
+/* ChiptaUZ — asosiy uslublar. Binafsha palitra, oq fon, to'q matn. */
+:root {
+  --brand: #6d28d9;
+  --brand-dark: #5b21b6;
+  --brand-deeper: #2e1065;
+}
+
+body {
+  color: #1f2937;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+a { color: var(--brand); }
+a:hover { color: var(--brand-dark); }
+
+.brand-gradient {
+  background: linear-gradient(120deg, var(--brand-deeper) 0%, var(--brand) 55%, #9333ea 100%);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--brand);
+  --bs-btn-border-color: var(--brand);
+  --bs-btn-hover-bg: var(--brand-dark);
+  --bs-btn-hover-border-color: var(--brand-dark);
+  --bs-btn-active-bg: var(--brand-deeper);
+  --bs-btn-active-border-color: var(--brand-deeper);
+  --bs-btn-disabled-bg: var(--brand);
+  --bs-btn-disabled-border-color: var(--brand);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--brand);
+  --bs-btn-border-color: var(--brand);
+  --bs-btn-hover-bg: var(--brand);
+  --bs-btn-hover-border-color: var(--brand);
+  --bs-btn-active-bg: var(--brand-dark);
+  --bs-btn-active-border-color: var(--brand-dark);
+}
+
+.text-primary { color: var(--brand) !important; }
+
+.bg-primary-subtle { background-color: #ede9fe !important; }
+.text-primary.bg-primary-subtle, .bg-primary-subtle.text-primary { color: var(--brand-dark) !important; }
+
+.nav-pills {
+  --bs-nav-pills-link-active-bg: var(--brand);
+}
+
+.hero { box-shadow: 0 10px 40px rgba(91, 33, 182, .35); }
+
+.card { border: 1px solid rgba(17, 24, 39, .08); border-radius: .75rem; }
+.card-header { border-bottom: 1px solid rgba(17, 24, 39, .06); }
+
+.event-card { transition: transform .18s ease, box-shadow .18s ease; }
+.event-card:hover { transform: translateY(-4px); box-shadow: 0 .75rem 1.5rem rgba(17, 24, 39, .12) !important; }
+
+.event-img { height: 180px; object-fit: cover; }
+.detail-img { height: 320px; object-fit: cover; }
+
+.event-img-placeholder {
+  height: 180px;
+  background: linear-gradient(120deg, var(--brand-deeper), var(--brand), #9333ea);
+}
+
+.stat-card { border-radius: .75rem; }
+
+.ticket-card { border-left: 4px solid var(--brand); }
+
+.ticket-full-header { position: relative; }
+.ticket-full-body {
+  position: relative;
+  border-top: 2px dashed #e5e7eb;
+}
+
+.empty-state { border: 2px dashed #d1d5db; background: #fff; border-radius: .75rem; }
+
+.page-loader {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(255, 255, 255, .6);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.scanner-box {
+  min-height: 280px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px dashed rgba(255, 255, 255, .25);
+}
+.scanner-box video { width: 100%; height: auto; display: block; }
+
+/* QR tekshiruv natijalari: yashil / sariq / qizil */
+.scan-result { border-radius: .75rem; padding: 1rem 1.25rem; }
+.scan-result.ok { background: #dcfce7; border: 2px solid #22c55e; color: #14532d; }
+.scan-result.warn { background: #fef9c3; border: 2px solid #eab308; color: #713f12; }
+.scan-result.err { background: #fee2e2; border: 2px solid #ef4444; color: #7f1d1d; }
+.scan-result .big { font-size: 2.2rem; line-height: 1; }
+
+.truncate-2 {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 576px) {
+  .detail-img { height: 200px; }
+  h1.display-6 { font-size: 1.5rem; }
+}

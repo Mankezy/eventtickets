@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Chipta {{ ticket.serial }} — ChiptaUZ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="ticket-full card shadow overflow-hidden">
+      <div class="ticket-full-header brand-gradient text-white p-4">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <div class="small opacity-75 text-uppercase">Kirish chiptasi · DEMO</div>
+            <h1 class="h4 fw-bold mt-1 mb-0">{{ ticket.event.title }}</h1>
+          </div>
+          <span class="badge {% if ticket.status == 'valid' %}bg-success{% elif ticket.status == 'used' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+            {{ ticket.get_status_display }}
+          </span>
+        </div>
+      </div>
+      <div class="ticket-full-body p-4">
+        <div class="row text-center mb-4">
+          <div class="col-6 border-end">
+            <div class="small text-muted">Sana</div>
+            <div class="fw-bold">{{ ticket.event.date|date:"d.m.Y" }}</div>
+          </div>
+          <div class="col-6">
+            <div class="small text-muted">Vaqt</div>
+            <div class="fw-bold">{{ ticket.event.time|time:"H:i" }}</div>
+          </div>
+        </div>
+        <p class="mb-3"><i class="bi bi-geo-alt text-primary me-2"></i>{{ ticket.event.address }}</p>
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <span class="badge bg-primary-subtle text-primary">{{ ticket.ticket_type.name }}</span>
+          <span class="badge bg-light text-dark border font-monospace">№ {{ ticket.serial }}</span>
+          <span class="badge bg-light text-dark border font-monospace small">{{ ticket.uid }}</span>
+        </div>
+
+        <div class="text-center bg-light rounded-3 p-4">
+          <img src="{{ qr_data_uri }}" alt="QR kod" class="img-fluid" style="max-width: 260px;">
+          <p class="small text-muted mt-3 mb-0">Nazorat punktida ushbu QR kodni skaner qildirib kiring</p>
+        </div>
+
+        {% if ticket.status == 'used' and ticket.used_at %}
+          <div class="alert alert-warning mt-3 mb-0 small">
+            Chipta ishlatilgan: {{ ticket.used_at|date:"d.m.Y H:i" }}
+            {% if ticket.used_by %} · Nazoratchi: {{ ticket.used_by.username }}{% endif %}
+          </div>
+        {% endif %}
+
+        <div class="d-grid gap-2 mt-4">
+          <a href="{% url 'ticket_pdf' ticket.pk %}" class="btn btn-primary btn-lg fw-semibold">
+            <i class="bi bi-file-earmark-pdf me-2"></i>PDF yuklab olish
+          </a>
+          <a href="{% url 'my_tickets' %}" class="btn btn-outline-secondary">Orqaga</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+<section class="hero rounded-4 p-4 p-md-5 mb-5 text-white brand-gradient">
+  <div class="row align-items-center">
+    <div class="col-lg-8">
+      <h1 class="display-6 fw-bold mb-3">Sevimli tadbiringizga chiptani bir daqiqada oling</h1>
+      <p class="lead mb-4 opacity-75">Konsert, sport, teatr va konferensiyalar — QR kodli elektron chiptalar bilan.</p>
+      <a href="{% url 'event_list' %}" class="btn btn-light btn-lg text-primary fw-semibold px-4">
+        <i class="bi bi-search me-2"></i>Tadbirlarni ko'rish
+      </a>
+    </div>
+    <div class="col-lg-4 d-none d-lg-block text-center">
+      <i class="bi bi-qr-code" style="font-size: 9rem; opacity:.35;"></i>
+    </div>
+  </div>
+</section>
+
+<div class="row text-center g-3 mb-5">
+  <div class="col-6 col-md-3">
+    <div class="card stat-card h-100"><div class="card-body">
+      <div class="fs-3 fw-bold text-primary">{{ total_events }}</div>
+      <div class="text-muted small">Faol tadbirlar</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card h-100"><div class="card-body">
+      <div class="fs-3 fw-bold text-primary">{{ total_tickets }}</div>
+      <div class="text-muted small">Sotilgan chiptalar</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card h-100"><div class="card-body">
+      <div class="fs-3 fw-bold text-primary"><i class="bi bi-lightning-charge"></i></div>
+      <div class="text-muted small">Tezkor QR nazorat</div>
+    </div></div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card stat-card h-100"><div class="card-body">
+      <div class="fs-3 fw-bold text-primary"><i class="bi bi-shield-check"></i></div>
+      <div class="text-muted small">Xavfsiz imzolangan chiptalar</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="h4 fw-bold mb-0">Yaqin kunlardagi tadbirlar</h2>
+  <a href="{% url 'event_list' %}" class="btn btn-outline-primary btn-sm">Barchasi <i class="bi bi-arrow-right"></i></a>
+</div>
+
+{% if events %}
+  <div class="row g-4">
+    {% for event in events %}
+      {% include "events/_card.html" %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state card p-5 text-center">
+    <i class="bi bi-calendar-x fs-1 text-muted"></i>
+    <p class="mt-3 mb-0 text-muted">Hozircha faol tadbirlar yo'q. Tez orada yangilari qo'shiladi!</p>
+  </div>
+{% endif %}
+{% endblock %}

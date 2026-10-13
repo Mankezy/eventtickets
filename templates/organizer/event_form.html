@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{% if editing %}Tadbirni tahrirlash{% else %}Yangi tadbir{% endif %} — ChiptaUZ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <h1 class="h4 fw-bold mb-4">
+      {% if editing %}<i class="bi bi-pencil-square text-primary me-2"></i>Tadbirni tahrirlash{% else %}<i class="bi bi-calendar-plus text-primary me-2"></i>Yangi tadbir yaratish{% endif %}
+    </h1>
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <form method="post" enctype="multipart/form-data" novalidate>
+          {% csrf_token %}
+          {% for field in form %}
+            {% if field.name == 'controllers' %}
+              <div class="mb-3">
+                <label class="form-label">{{ field.label }}</label>
+                <div class="border rounded p-2" style="max-height: 160px; overflow-y: auto;">
+                  {{ field }}
+                </div>
+                <div class="form-text">QR nazoratni amalga oshiradigan xodimlarni tanlang.</div>
+                {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+              </div>
+            {% else %}
+              <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.name == 'description' or field.name == 'status' or field.name == 'category' %}
+                  {% if field.name == 'description' %}
+                    <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control" rows="5">{{ field.value|default:'' }}</textarea>
+                  {% else %}
+                    <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-select">
+                      {% for value, label in field.field.choices %}
+                        <option value="{{ value }}" {% if field.value == value %}selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  {% endif %}
+                {% else %}
+                  {{ field }}
+                {% endif %}
+                {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary fw-semibold px-4">{% if editing %}Saqlash{% else %}Yaratish{% endif %}</button>
+            <a href="{% url 'organizer_dashboard' %}" class="btn btn-outline-secondary">Bekor qilish</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Kirish — ChiptaUZ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm mt-4">
+      <div class="card-body p-4">
+        <h1 class="h4 fw-bold text-center mb-4"><i class="bi bi-box-arrow-in-right text-primary me-2"></i>Tizimga kirish</h1>
+        {% if form.errors %}
+          <div class="alert alert-danger py-2 small">Login yoki parol noto'g'ri.</div>
+        {% endif %}
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Login</label>
+            <input type="text" name="username" class="form-control" required autofocus>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Parol</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+          <input type="hidden" name="next" value="{{ next }}">
+          <button class="btn btn-primary w-100 py-2 fw-semibold">Kirish</button>
+        </form>
+        <p class="text-center small text-muted mt-3 mb-0">
+          Akkauntingiz yo'qmi? <a href="{% url 'register' %}">Ro'yxatdan o'ting</a>
+        </p>
+        <div class="alert alert-light border small mt-3 mb-0">
+          <strong>Sinov akkauntlari</strong> (parol: <code>Test1234!</code>):<br>
+          <code>client</code> — mijoz · <code>organizer</code> — tashkilotchi<br>
+          <code>controller</code> — nazoratchi · <code>admin</code> — administrator
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}DEMO to'lov — ChiptaUZ{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="alert alert-warning d-flex align-items-center" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+      <div><strong>DEMO TO'LOV</strong> — bu sinov rejimi. Haqiqiy pul yechilmaydi va haqiqiy karta ma'lumotlari so'ralmaydi.</div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-bold">To'lov — buyurtma #{{ order.pk }}</div>
+      <div class="card-body p-4">
+        <h2 class="h6 text-muted mb-1">{{ order.event.title }}</h2>
+        <p class="fs-3 fw-bold text-primary mb-4">{{ order.total_amount|floatformat:0|intcomma }} so'm</p>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12">
+            <label class="form-label small text-muted">Karta raqami (demo — ixtiyoriy)</label>
+            <input type="text" class="form-control" value="8600 0000 0000 0000" disabled>
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted">Amal qilish muddati</label>
+            <input type="text" class="form-control" value="12/30" disabled>
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted">CVV</label>
+            <input type="text" class="form-control" value="•••" disabled>
+          </div>
+        </div>
+        <p class="small text-muted">Maydonlar o'chirilgan — sinov rejimida karta ma'lumotlari kerak emas.</p>
+
+        <form method="post" action="{% url 'payment_process' order.pk %}">
+          {% csrf_token %}
+          <div class="d-grid gap-2">
+            <button name="outcome" value="success" class="btn btn-success btn-lg fw-semibold" data-loading>
+              <i class="bi bi-check-circle me-2"></i>To'lov muvaffaqiyatli (demo)
+            </button>
+            <button name="outcome" value="failure" class="btn btn-outline-danger" data-loading>
+              <i class="bi bi-x-circle me-2"></i>To'lov muvaffaqiyatsiz (demo)
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
